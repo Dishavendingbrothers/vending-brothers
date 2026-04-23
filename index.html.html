@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vending Brothers – Download App</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, #1a1a2e 0%, #0a0a0a 60%),
+                  radial-gradient(ellipse at 80% 80%, #0d1b12 0%, transparent 60%);
+      z-index: 0;
+    }
+
+    .dots {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, #ffffff08 1px, transparent 1px);
+      background-size: 32px 32px;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-wrap {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      box-shadow: 0 0 40px rgba(34,197,94,0.3);
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .detecting {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 28px;
+    }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: #22c55e;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-bottom: 12px;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-android {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(34,197,94,0.3);
+    }
+
+    .btn-ios {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 13px;
+      padding: 13px 20px;
+      box-shadow: none;
+    }
+
+    .btn svg { flex-shrink: 0; }
+
+    .divider {
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+      margin: 20px 0 16px;
+      position: relative;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 38%;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 6px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-android { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .badge-ios     { background: rgba(59,130,246,0.15); color: #93c5fd; }
+    .badge-web     { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.4); }
+
+    #main-btn { display: none; }
+    #fallback  { display: none; }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="dots"></div>
+
+  <div class="card">
+    <div class="logo-wrap">🎰</div>
+    <h1>Vending Brothers</h1>
+    <p class="sub">Your smart vending experience,<br>right on your phone.</p>
+
+    <div class="detecting" id="detecting-msg">
+      <span class="spinner"></span>
+      <span>Detecting your device…</span>
+    </div>
+
+    <!-- Primary auto-redirect button (shown after detection) -->
+    <a id="main-btn" class="btn" href="#"></a>
+
+    <!-- Fallback: show both buttons if device unknown -->
+    <div id="fallback">
+      <span class="badge badge-android">Android</span>
+      <a class="btn btn-android"
+         href="https://play.google.com/store/apps/details?id=vb.engageflake.consumer.app"
+         target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <path d="M3.18 23.76a2 2 0 0 0 2.07-.22l11.07-6.4-2.44-2.44-10.7 9.06zM.5 1.1A2 2 0 0 0 0 2.5v19a2 2 0 0 0 .5 1.4l.08.07 10.64-10.64v-.25L.58 1.03.5 1.1zM20.93 10.3l-3.07-1.78-2.73 2.73 2.73 2.73 3.09-1.79a1.78 1.78 0 0 0 0-3.12v.23zM3.18.24l13.63 7.88-2.44 2.44L3.18.24z"/>
+        </svg>
+        Get on Google Play
+      </a>
+
+      <span class="badge badge-ios" style="margin-top:8px; display:inline-block;">iPhone / iPad</span>
+      <a class="btn btn-ios"
+         href="https://apps.apple.com/in/app/vending-brothers/id6758942885"
+         target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        Get on App Store
+      </a>
+    </div>
+
+    <div id="smart-redirect-btns" style="display:none;">
+      <div class="divider">or get it on</div>
+      <a id="alt-btn" class="btn btn-secondary" href="#" target="_blank"></a>
+    </div>
+  </div>
+
+  <script>
+    const ANDROID_URL = "https://play.google.com/store/apps/details?id=vb.engageflake.consumer.app";
+    const IOS_URL     = "https://apps.apple.com/in/app/vending-brothers/id6758942885";
+
+    const ua = navigator.userAgent || "";
+    const isIOS     = /iPhone|iPad|iPod/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+
+    const detectMsg  = document.getElementById("detecting-msg");
+    const mainBtn    = document.getElementById("main-btn");
+    const altBtns    = document.getElementById("smart-redirect-btns");
+    const altBtn     = document.getElementById("alt-btn");
+    const fallback   = document.getElementById("fallback");
+
+    function androidIcon() {
+      return `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M3.18 23.76a2 2 0 0 0 2.07-.22l11.07-6.4-2.44-2.44-10.7 9.06zM.5 1.1A2 2 0 0 0 0 2.5v19a2 2 0 0 0 .5 1.4l.08.07 10.64-10.64v-.25L.58 1.03.5 1.1zM20.93 10.3l-3.07-1.78-2.73 2.73 2.73 2.73 3.09-1.79a1.78 1.78 0 0 0 0-3.12v.23zM3.18.24l13.63 7.88-2.44 2.44L3.18.24z"/></svg>`;
+    }
+
+    function appleIcon() {
+      return `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>`;
+    }
+
+    setTimeout(function() {
+      detectMsg.style.display = "none";
+
+      if (isAndroid) {
+        mainBtn.style.display = "flex";
+        mainBtn.className = "btn btn-android";
+        mainBtn.href = ANDROID_URL;
+        mainBtn.innerHTML = androidIcon() + " Get on Google Play";
+        mainBtn.target = "_blank";
+
+        altBtns.style.display = "block";
+        altBtn.href = IOS_URL;
+        altBtn.innerHTML = appleIcon() + " Also on App Store (iOS)";
+        altBtn.target = "_blank";
+        altBtns.style.display = "block";
+
+        // auto redirect after short delay
+        setTimeout(function(){ window.location.href = ANDROID_URL; }, 1800);
+
+      } else if (isIOS) {
+        mainBtn.style.display = "flex";
+        mainBtn.className = "btn btn-ios";
+        mainBtn.href = IOS_URL;
+        mainBtn.innerHTML = appleIcon() + " Get on App Store";
+        mainBtn.target = "_blank";
+
+        altBtns.style.display = "block";
+        altBtn.href = ANDROID_URL;
+        altBtn.innerHTML = androidIcon() + " Also on Google Play (Android)";
+        altBtn.target = "_blank";
+
+        setTimeout(function(){ window.location.href = IOS_URL; }, 1800);
+
+      } else {
+        // Desktop or unknown — show both buttons
+        fallback.style.display = "block";
+      }
+    }, 900);
+  </script>
+</body>
+</html>
